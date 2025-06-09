@@ -1,0 +1,146 @@
+import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.*;
+import javafx.stage.Stage;
+
+// Gardener class
+class Gardener {
+    private int gardenerID;
+    private String name;
+    private String email;
+
+    public Gardener(int gardenerID, String name, String email) {
+        this.gardenerID = gardenerID;
+        this.name = name;
+        this.email = email;
+    }
+
+    public void scheduleTask() {
+        System.out.println(name + " scheduled a task.");
+    }
+
+    public void viewGardenStatus() {
+        System.out.println(name + " is viewing the garden status.");
+    }
+
+    public String getName() {
+        return name;
+    }
+}
+
+// Controller class
+class Controller {
+    private int controllerID;
+    private String firmwareVersion;
+
+    public Controller(int controllerID, String firmwareVersion) {
+        this.controllerID = controllerID;
+        this.firmwareVersion = firmwareVersion;
+    }
+
+    public void sendCommand() {
+        System.out.println("Command sent to controller " + controllerID);
+    }
+
+    public void updateFirmware() {
+        System.out.println("Firmware updated to version " + firmwareVersion);
+    }
+
+    public String getFirmwareVersion() {
+        return firmwareVersion;
+    }
+}
+
+// JavaFX GUI using VBox
+public class Dashboard extends Application {
+
+    @Override
+    public void start(Stage primaryStage) {
+        Gardener gardener = new Gardener(1, "Alice", "alice@example.com");
+        Controller controller = new Controller(101, "v1.0.3");
+
+        primaryStage.setTitle("Dashboard");
+
+        // Title
+        Text sceneTitle = new Text("Welcome to Smart Gardening Assistant!");
+        sceneTitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+
+        // Gardener name display
+        Label nameLabel = new Label("Gardener:");
+        TextField nameField = new TextField(gardener.getName());
+        nameField.setEditable(false);
+
+        VBox gardenerInfoBox = new VBox(5, nameLabel, nameField);
+        gardenerInfoBox.setAlignment(Pos.CENTER_LEFT);
+
+        // Gardener buttons
+        Button viewStatusBtn = new Button("View Status");
+        Button scheduleTaskBtn = new Button("Schedule Task");
+
+        HBox gardenerButtons = new HBox(10, viewStatusBtn, scheduleTaskBtn);
+        gardenerButtons.setAlignment(Pos.CENTER);
+
+        // Controller buttons
+        Button sendCommandBtn = new Button("Send Command");
+        Button updateFirmwareBtn = new Button("Update Firmware");
+
+        HBox controllerButtons = new HBox(10, sendCommandBtn, updateFirmwareBtn);
+        controllerButtons.setAlignment(Pos.CENTER);
+
+        // Action message
+        final Text actionText = new Text();
+
+        // Set up VBox layout
+        VBox layout = new VBox(15);
+        layout.setAlignment(Pos.CENTER);
+        layout.setPadding(new Insets(25));
+        layout.getChildren().addAll(
+            sceneTitle,
+            gardenerInfoBox,
+            gardenerButtons,
+            controllerButtons,
+            actionText
+        );
+
+        // Button Actions
+        viewStatusBtn.setOnAction(e -> {
+            gardener.viewGardenStatus();
+            actionText.setFill(Color.GREEN);
+            actionText.setText("Garden status viewed by " + gardener.getName());
+        });
+
+        scheduleTaskBtn.setOnAction(e -> {
+            gardener.scheduleTask();
+            actionText.setFill(Color.GREEN);
+            actionText.setText("Task scheduled by " + gardener.getName());
+        });
+
+        sendCommandBtn.setOnAction(e -> {
+            controller.sendCommand();
+            actionText.setFill(Color.DARKBLUE);
+            actionText.setText("Command sent to controller.");
+        });
+
+        updateFirmwareBtn.setOnAction(e -> {
+            controller.updateFirmware();
+            actionText.setFill(Color.DARKBLUE);
+            actionText.setText("Firmware updated to " + controller.getFirmwareVersion());
+        });
+
+        Scene scene = new Scene(layout, 450, 300);
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+}
